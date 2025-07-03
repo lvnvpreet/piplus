@@ -20,12 +20,50 @@ Edit the `.env.local` file and update the values:
 - `NEXTAUTH_SECRET`: Generate a secure random string
 - Update URLs if running on different ports
 
-### 3. Generate Secure Secrets
+### 3. Start the Application
+
+**Backend:**
+```bash
+cd backend
+npm install
+npm start
+```
+
+**Frontend (with Node.js v18+ compatibility):**
+```bash
+cd frontend
+npm install
+
+# For Node.js v18+ (Windows PowerShell)
+$env:NODE_OPTIONS="--openssl-legacy-provider"; npm run dev
+
+# For Node.js v18+ (Windows CMD)
+set NODE_OPTIONS=--openssl-legacy-provider && npm run dev
+
+# For Node.js v18+ (Linux/macOS)
+export NODE_OPTIONS="--openssl-legacy-provider" && npm run dev
+```
+
+### 4. Generate Secure Secrets
 For production, generate secure secrets:
 ```bash
 # For JWT_SECRET and NEXTAUTH_SECRET
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 ```
+
+## ⚠️ Node.js Compatibility
+
+This project uses Next.js 10.2.3 which requires the legacy OpenSSL provider for Node.js v18+:
+
+### Why This Error Occurs:
+- **Node.js Version**: v18+ uses OpenSSL 3.0+ 
+- **Next.js Version**: 10.2.3 uses deprecated OpenSSL functions
+- **Solution**: Use `--openssl-legacy-provider` flag
+
+### Alternative Solutions:
+1. **Use the legacy provider** (recommended for this project)
+2. **Downgrade Node.js** to v16 or lower
+3. **Upgrade Next.js** to v12+ (requires code changes)
 
 ## 📝 Environment Variables Explained
 
@@ -53,4 +91,5 @@ environment:
   - PORT=5000
   - MONGODB_URI=mongodb://mongo:27017/piplus
   - JWT_SECRET=${JWT_SECRET}
+  - NODE_OPTIONS=--openssl-legacy-provider  # For frontend container
 ```
